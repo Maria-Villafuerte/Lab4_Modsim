@@ -3,22 +3,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 from load_data import load_data
 
-print("🦠 ANÁLISIS DE SIMULACIÓN EPIDEMIOLÓGICA - PASO 1")
+print("ANÁLISIS DE SIMULACIÓN EPIDEMIOLÓGICA - PASO 1")
 print("=" * 50)
 
 # 1. CARGAR DATOS
-print("📂 Cargando datos...")
 data = load_data()
 discrete = data['discrete']
 continuous = data['continuous']
-print("✅ Datos cargados!")
 
-# 2. VERIFICAR Y CORREGIR LONGITUDES
-print("\n🔍 Verificando longitudes de datos...")
 print(f"Discrete - Timestamps: {len(discrete['timestamps'])}, Infecciones: {len(discrete['infections'])}")
 print(f"Continuous - Timestamps: {len(continuous['timestamps'])}, Infecciones: {len(continuous['infections'])}")
 
-# Ajustar longitudes si es necesario
 min_len_discrete = min(len(discrete['timestamps']), len(discrete['infections']))
 min_len_continuous = min(len(continuous['timestamps']), len(continuous['infections']))
 
@@ -26,11 +21,6 @@ discrete_times = discrete['timestamps'][:min_len_discrete]
 discrete_infections = discrete['infections'][:min_len_discrete]
 continuous_times = continuous['timestamps'][:min_len_continuous]
 continuous_infections = continuous['infections'][:min_len_continuous]
-
-print(f"✅ Ajustado - Discrete: {len(discrete_times)} puntos, Continuous: {len(continuous_times)} puntos")
-
-# 3. CREAR GRÁFICOS SIMPLES
-print("\n📈 Creando gráficos...")
 
 # Figura con 4 subplots
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(12, 8))
@@ -67,27 +57,6 @@ ax4.set_title('Estado de Vacunación')
 
 
 plt.tight_layout()
-plt.savefig("grafica.jpg", format="jpg")
+plt.savefig("../Imagenes/parte_1.jpg", format="jpg")
 plt.show()
-
-# 4. ANÁLISIS SIMPLE
-print("\n📊 ANÁLISIS DE INTERVALOS:")
-
-# Verificar intervalos regulares
-discrete_intervals = np.diff(discrete_times)
-print(f"Intervalos en datos discretos: {discrete_intervals[:5]}...")
-regular_discrete = len(set(discrete_intervals)) == 1
-print(f"¿Intervalos regulares en discretos? {regular_discrete}")
-
-if regular_discrete:
-    print(f"Intervalo: {discrete_intervals[0]} día(s)")
-
-# Buscar picos
-picos_discretos = [i for i, val in enumerate(discrete_infections) if val > 50]
-print(f"\nPicos encontrados en días: {[discrete_times[i] for i in picos_discretos]}")
-print(f"Valores de los picos: {[discrete_infections[i] for i in picos_discretos]}")
-
-# Períodos de baja transmisión
-bajos_discretos = sum(1 for val in discrete_infections if val < 20)
-print(f"Períodos con baja transmisión (< 20 casos): {bajos_discretos}/{len(discrete_infections)}")
 

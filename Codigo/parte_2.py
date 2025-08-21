@@ -1,21 +1,16 @@
-# PASO 2: IDENTIFICACIÓN DEL MODELO TEMPORAL
-# ==========================================
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from load_data import load_data
 
-print("🦠 ANÁLISIS DE SIMULACIÓN EPIDEMIOLÓGICA - PASO 2")
-print("🔍 IDENTIFICACIÓN DEL MODELO TEMPORAL")
+print("ANÁLISIS DE SIMULACIÓN EPIDEMIOLÓGICA - PASO 2")
+print("MODELO TEMPORAL")
 print("=" * 50)
 
-# 1. CARGAR Y PREPARAR DATOS
 data = load_data()
 discrete = data['discrete']
 continuous = data['continuous']
 
-# Ajustar longitudes
 min_len_discrete = min(len(discrete['timestamps']), len(discrete['infections']))
 discrete_times = discrete['timestamps'][:min_len_discrete]
 discrete_infections = discrete['infections'][:min_len_discrete]
@@ -24,32 +19,19 @@ min_len_continuous = min(len(continuous['timestamps']), len(continuous['infectio
 continuous_times = continuous['timestamps'][:min_len_continuous]
 continuous_infections = continuous['infections'][:min_len_continuous]
 
-print("📂 Datos cargados y preparados")
-
-# 2. IMPLEMENTAR PSEUDOCÓDIGO DE ANÁLISIS
-print("\n🔍 PASO 2.1: Análisis del Pseudocódigo")
-print("=" * 40)
 
 # Verificar si timestamps son enteros
 def analyze_timestamps(timestamps, name):
     are_integers = all(isinstance(t, (int, np.integer)) or float(t).is_integer() for t in timestamps)
-    print(f"\n{name}:")
-    print(f"  ¿Timestamps son enteros? {are_integers}")
-    
     if are_integers:
-        print(f"  → likely_discrete_time = True")
         return "discrete"
     else:
-        print(f"  → likely_continuous_time = True")
         return "continuous"
 
 # Analizar ambos datasets
 discrete_type = analyze_timestamps(discrete_times, "DATOS DISCRETOS")
 continuous_type = analyze_timestamps(continuous_times, "DATOS CONTINUOS")
 
-# 3. ANÁLISIS DE PICOS PERIÓDICOS
-print("\n📈 PASO 2.2: Análisis de Picos Periódicos")
-print("=" * 40)
 
 def find_peaks(infections, threshold=50):
     """Encuentra picos en las infecciones"""
@@ -95,9 +77,6 @@ def analyze_periodicity(times, infections, name):
 discrete_periodicity, discrete_interval = analyze_periodicity(discrete_times, discrete_infections, "DATOS DISCRETOS")
 continuous_periodicity, continuous_interval = analyze_periodicity(continuous_times, continuous_infections, "DATOS CONTINUOS")
 
-# 4. ANÁLISIS DE TRANSMISIÓN ENTRE PICOS
-print("\n🔄 PASO 2.3: Análisis de Transmisión entre Picos")
-print("=" * 40)
 
 def analyze_between_peaks(infections, name):
     print(f"\n{name}:")
@@ -110,18 +89,14 @@ def analyze_between_peaks(infections, name):
     print(f"  Porcentaje: {len(small_infections)/len(infections)*100:.1f}%")
     
     if len(small_infections) > len(infections) * 0.3:  # Más del 30%
-        print(f"  → evidence_for_continuous_time += 1")
         return True
     else:
-        print(f"  → Pocas infecciones pequeñas entre picos")
         return False
 
 discrete_small_transmission = analyze_between_peaks(discrete_infections, "DATOS DISCRETOS")
 continuous_small_transmission = analyze_between_peaks(continuous_infections, "DATOS CONTINUOS")
 
 # 5. VISUALIZACIÓN DE ANÁLISIS TEMPORAL
-print("\n📊 PASO 2.4: Visualización del Análisis")
-
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(14, 10))
 
 # Gráfico 1: Datos discretos con análisis de picos
@@ -171,6 +146,6 @@ ax4.set_ylabel('Frecuencia')
 ax4.legend()
 
 plt.tight_layout()
-plt.savefig("parte_2.jpg")
+# plt.savefig("parte_2.jpg")
 plt.show()
 
